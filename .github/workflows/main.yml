@@ -1,0 +1,41 @@
+# Name of the workflow
+name: Deploy Website to GitHub Pages
+
+# This workflow runs on any push to the 'main' branch
+on:
+  push:
+    branches: [ "main" ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  deploy:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    
+    # Grant GITHUB_TOKEN the permissions it needs to deploy to GitHub Pages
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Step 1: Check out your repository code so the workflow can access it
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Setup GitHub Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      # Step 3: Build and upload the artifact. For a static site, this just means zipping up all the files.
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload the entire repository
+          path: '.'
+
+      # Step 4: Deploy the artifact to GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
